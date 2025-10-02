@@ -1,37 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SkillSwap - Home</title>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Ysabeau+SC&family=Libre+Baskerville&display=swap" rel="stylesheet">
-  <!-- Material Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!-- CSS -->
-  <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
-  <header>
-    <h1>SkillSwap</h1>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="skills.html">Skills</a></li>
-        <li><a href="gallery.html">Gallery</a></li>
-        <li><a href="add.html">Add More</a></li>
-      </ul>
-    </nav>
-  </header>
+<?php
+$page_title = 'SkillSwap - Home';
+$active = 'Home';
+require 'includes/header.inc';
+require 'includes/nav.inc';
+require 'includes/db_connect.inc';
+?>
 
-  <main>
-    <h2>Welcome to SkillSwap</h2>
-    <p>This is where your homepage content will go.</p>
-  </main>
+<section class="hero">
+  <img src="assets/images/skills_banner.png" alt="Skills banner" />
+  <div class="hero-overlay">
+    <h2>Browse the latest skills shared by our community.</h2>
+  </div>
+</section>
 
-  <footer>
-    <p>&copy; 2025 SkillSwap. All rights reserved.</p>
-  </footer>
-</body>
-</html>
+<section class="cards">
+  <h2 class="section-title">Latest Skills</h2>
+  <div class="grid">
+    <?php
+      $q = "SELECT skill_id, title, description, category, rate_per_hr, level, image_path
+            FROM skills ORDER BY created_at DESC LIMIT 4";
+      if ($res = $conn->query($q)) {
+        while ($row = $res->fetch_assoc()) {
+          $id   = (int)$row['skill_id'];
+          $img  = $row['image_path'] ?: 'placeholder.png';
+          $rate = number_format((float)$row['rate_per_hr'], 2);
+          ?>
+            <article class="card">
+              <div class="thumb" data-full="<?= 'assets/images/skills/' . htmlspecialchars($img) ?>" data-title="<?= htmlspecialchars($row['title']) ?>">
+                <img src="<?= 'assets/images/skills/' . htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($row['title']) ?>" />
+              </div>
+              <div class="card-body">
+                <h3><?= htmlspecialchars($row['title']) ?></h3>
+                <p class="meta"><?= htmlspecialchars($row['category']) ?> • <?= htmlspecialchars($row['level']) ?> • $<?= $rate ?>/hr</p>
+                <a class="btn" href="details.php?id=<?= $id ?>">View Details</a>
+              </div>
+            </article>
+          <?php
+        }
+        $res->free();
+      }
+    ?>
+  </div>
+</section>
+
+<div id="modal" class="modal"><img id="modalImg" alt=""><button id="modalClose" class="modal-close">Close</button></div>
+
+<?php
+require 'includes/footer.inc';
+$conn->close();
