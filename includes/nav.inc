@@ -1,8 +1,8 @@
 <?php
 if (!isset($active)) { $active = ''; }
-function a($name, $file, $active) {
-  $cls = ($active === $name) ? 'class="active"' : '';
-  echo "<li><a $cls href=\"$file\">" . htmlspecialchars($name) . "</a></li>";
+function nav_item($label, $href, $active) {
+  $cls = ($active === $label) ? 'class="active"' : '';
+  echo "<li><a $cls href=\"$href\">" . htmlspecialchars($label) . "</a></li>";
 }
 ?>
 <header class="site-header">
@@ -10,10 +10,10 @@ function a($name, $file, $active) {
     <h1 class="logo"><a href="index.php">SkillSwap</a></h1>
     <nav>
       <ul>
-        <?php a('Home', 'index.php', $active); ?>
-        <?php a('All Skills', 'skills.php', $active); ?>
-        <?php a('Gallery', 'gallery.php', $active); ?>
-        <?php a('Add More', 'add.php', $active); ?>
+        <?php nav_item('Home', 'index.php', $active); ?>
+        <?php nav_item('All Skills', 'skills.php', $active); ?>
+        <?php nav_item('Gallery', 'gallery.php', $active); ?>
+        <?php nav_item('Add More', 'add.php', $active); ?>
       </ul>
     </nav>
   </div>

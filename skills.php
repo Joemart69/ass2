@@ -10,22 +10,23 @@ require 'includes/db_connect.inc';
 
 <div class="skills-layout">
   <aside class="skills-banner">
-    <input type="text" value="Skills collage banner" readonly />
+    <img src="assets/images/skills_banner.png" alt="Skills banner">
   </aside>
 
-  <div class="table-wrap">
-    <table class="table">
+  <div class="table-wrap table-responsive">
+    <table class="table table-borderless mb-0">
       <thead>
         <tr>
           <th>Title</th>
           <th>Category</th>
           <th>Level</th>
-          <th>Rate ($/hr)</th>
+          <th class="text-end">Rate ($/hr)</th>
         </tr>
       </thead>
       <tbody>
         <?php
-          $q = "SELECT skill_id, title, category, level, rate_per_hr FROM skills ORDER BY title ASC";
+          $q = "SELECT skill_id, title, category, level, rate_per_hr
+                FROM skills ORDER BY created_at DESC, title ASC";
           if ($res = $conn->query($q)) {
             while ($row = $res->fetch_assoc()) {
               $id = (int)$row['skill_id'];
@@ -34,7 +35,7 @@ require 'includes/db_connect.inc';
               echo '<td><a href="details.php?id='.$id.'">'.htmlspecialchars($row['title']).'</a></td>';
               echo '<td>'.htmlspecialchars($row['category']).'</td>';
               echo '<td>'.htmlspecialchars($row['level']).'</td>';
-              echo '<td>$'.$rate.'</td>';
+              echo '<td class="text-end">$'.$rate.'</td>';
               echo '</tr>';
             }
             $res->free();

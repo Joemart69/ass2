@@ -9,7 +9,8 @@ require 'includes/db_connect.inc';
 <h2>Skill Gallery</h2>
 <div class="grid gallery">
   <?php
-    $q = "SELECT skill_id, title, category, level, rate_per_hr, image_path FROM skills ORDER BY created_at DESC";
+    $q = "SELECT skill_id, title, category, level, rate_per_hr, image_path
+          FROM skills ORDER BY created_at DESC";
     if ($res = $conn->query($q)) {
       while ($row = $res->fetch_assoc()) {
         $id = (int)$row['skill_id'];
@@ -18,7 +19,7 @@ require 'includes/db_connect.inc';
         ?>
         <article class="card image-card" data-full="<?= 'assets/images/skills/' . htmlspecialchars($img) ?>" data-title="<?= htmlspecialchars($row['title']) ?>">
           <div class="thumb">
-            <img src="<?= 'assets/images/skills/' . htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($row['title']) ?>" />
+            <img src="<?= 'assets/images/skills/' . htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($row['title']) ?>">
           </div>
           <div class="card-body">
             <h3><a href="details.php?id=<?= $id ?>"><?= htmlspecialchars($row['title']) ?></a></h3>
@@ -32,6 +33,7 @@ require 'includes/db_connect.inc';
   ?>
 </div>
 
+<!-- Shared modal -->
 <div id="modal" class="modal"><img id="modalImg" alt=""><button id="modalClose" class="modal-close">Close</button></div>
 
 <?php

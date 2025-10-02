@@ -6,12 +6,30 @@ require 'includes/nav.inc';
 require 'includes/db_connect.inc';
 ?>
 
-<section class="hero">
-  <img src="assets/images/skills_banner.png" alt="Skills banner" />
-  <div class="hero-overlay">
-    <h2>Browse the latest skills shared by our community.</h2>
+<!-- Static carousel -->
+<div id="heroCarousel" class="carousel slide mb-3" data-bs-ride="false">
+  <div class="carousel-inner">
+    <?php
+      $slides = [
+        'assets/images/skills_banner.png',
+        'assets/images/skills_banner.png',
+        'assets/images/skills_banner.png'
+      ];
+      foreach ($slides as $i => $src) {
+        $activeClass = $i === 0 ? 'active' : '';
+        echo '<div class="carousel-item '.$activeClass.'">';
+        echo '<img src="'.htmlspecialchars($src).'" class="d-block w-100" alt="Slide '.($i+1).'" style="height:320px;object-fit:cover">';
+        echo '</div>';
+      }
+    ?>
   </div>
-</section>
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
 
 <section class="cards">
   <h2 class="section-title">Latest Skills</h2>
@@ -27,7 +45,7 @@ require 'includes/db_connect.inc';
           ?>
             <article class="card">
               <div class="thumb" data-full="<?= 'assets/images/skills/' . htmlspecialchars($img) ?>" data-title="<?= htmlspecialchars($row['title']) ?>">
-                <img src="<?= 'assets/images/skills/' . htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($row['title']) ?>" />
+                <img src="<?= 'assets/images/skills/' . htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($row['title']) ?>">
               </div>
               <div class="card-body">
                 <h3><?= htmlspecialchars($row['title']) ?></h3>
@@ -43,6 +61,7 @@ require 'includes/db_connect.inc';
   </div>
 </section>
 
+<!-- Shared modal -->
 <div id="modal" class="modal"><img id="modalImg" alt=""><button id="modalClose" class="modal-close">Close</button></div>
 
 <?php
