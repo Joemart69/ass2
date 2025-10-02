@@ -1,51 +1,79 @@
 <?php
-$page_title = 'All Skills';
+// skills.php
 $active = 'All Skills';
-require 'includes/header.inc';
-require 'includes/nav.inc';
-require 'includes/db_connect.inc';
+$page_title = 'All Skills';
+
+require __DIR__ . '/includes/db_connect.inc';
+require __DIR__ . '/includes/header.inc';
+require __DIR__ . '/includes/nav.inc';
+
+// The 8 skills required by the assignment, in the exact display order
+$must_have = [
+  "Beginner Guitar Lessons",
+  "Intermediate Fingerstyle",
+  "Artisan Bread Baking",
+  "French Pastry Making",
+  "Watercolor Basics",
+  "Digital Illustration with Procreate",
+  "Morning Vinyasa Flow",
+  "Intro to PHP & MySQL"
+];
+
+// Build a quoted, comma-separated list for SQL IN() and FIELD()
+$quoted = array_map(fn($t) => "'" . $conn->real_escape_string($t) . "'", $must_have);
+$list_for_in    = implode(',', $quoted);
+$list_for_order = implode(',', $quoted);
+
+// Pull only those 8 rows, and preserve the exact order
+$sql = "
+  SELECT skill_id, title, category, level, rate_per_hr
+  FROM skills
+  WHERE title IN ($list_for_in)
+  ORDER BY FIELD(title, $list_for_order)
+";
+$res = $conn->query($sql);
 ?>
+<main class="container">
+  <h1>All Skills</h1>
 
-<h2>All Skills</h2>
+  <div class="skills-layout">
+    <!-- Banner (left) -->
+    <div class="skills-banner">
+      <img src="assets/images/skills_banner.png" alt="Skills collage banner">
+    </div>
 
-<div class="skills-layout">
-  <aside class="skills-banner">
-    <img src="assets/images/skills_banner.png" alt="Skills banner">
-  </aside>
-
-  <div class="table-wrap table-responsive">
-    <table class="table table-borderless mb-0">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Category</th>
-          <th>Level</th>
-          <th class="text-end">Rate ($/hr)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php
-          $q = "SELECT skill_id, title, category, level, rate_per_hr
-                FROM skills ORDER BY created_at DESC, title ASC";
-          if ($res = $conn->query($q)) {
-            while ($row = $res->fetch_assoc()) {
-              $id = (int)$row['skill_id'];
-              $rate = number_format((float)$row['rate_per_hr'], 2);
-              echo '<tr>';
-              echo '<td><a href="details.php?id='.$id.'">'.htmlspecialchars($row['title']).'</a></td>';
-              echo '<td>'.htmlspecialchars($row['category']).'</td>';
-              echo '<td>'.htmlspecialchars($row['level']).'</td>';
-              echo '<td class="text-end">$'.$rate.'</td>';
-              echo '</tr>';
-            }
-            $res->free();
-          }
-        ?>
-      </tbody>
-    </table>
+    <!-- Table (right) -->
+    <div class="table-wrap">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th style="width:42%">Title</th>
+            <th style="width:20%">Category</th>
+            <th style="width:18%">Level</th>
+            <th style="width:20%; text-align:right">Rate ($/hr)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if ($res && $res->num_rows > 0): ?>
+            <?php while ($row = $res->fetch_assoc()): ?>
+              <tr>
+                <td>
+                  <a href="details.php?id=<?= (int)$row['skill_id'] ?>">
+                    <?= htmlspecialchars($row['title']) ?>
+                  </a>
+                </td>
+                <td><?= htmlspecialchars($row['category']) ?></td>
+                <td><?= htmlspecialchars($row['level']) ?></td>
+                <td style="text-align:right">$<?= number_format((float)$row['rate_per_hr'], 2) ?></td>
+              </tr>
+            <?php endwhile; ?>
+          <?php else: ?>
+            <tr><td colspan="4">No skills found.</td></tr>
+          <?php endif; ?>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
+</main>
 
-<?php
-require 'includes/footer.inc';
-$conn->close();
+<?php require __DIR__ . '/includes/footer.inc'; ?>

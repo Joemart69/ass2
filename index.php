@@ -1,69 +1,91 @@
 <?php
-$page_title = 'SkillSwap - Home';
+$page_title = 'SkillSwap';
 $active = 'Home';
-require 'includes/header.inc';
-require 'includes/nav.inc';
-require 'includes/db_connect.inc';
+include 'includes/header.inc';
+include 'includes/nav.inc';
+include 'includes/db_connect.inc';
 ?>
 
-<!-- Static carousel -->
-<div id="heroCarousel" class="carousel slide mb-3" data-bs-ride="false">
-  <div class="carousel-inner">
-    <?php
-      $slides = [
-        'assets/images/skills_banner.png',
-        'assets/images/skills_banner.png',
-        'assets/images/skills_banner.png'
-      ];
-      foreach ($slides as $i => $src) {
-        $activeClass = $i === 0 ? 'active' : '';
-        echo '<div class="carousel-item '.$activeClass.'">';
-        echo '<img src="'.htmlspecialchars($src).'" class="d-block w-100" alt="Slide '.($i+1).'" style="height:320px;object-fit:cover">';
-        echo '</div>';
-      }
-    ?>
+<main class="container">
+
+  <!-- Carousel -->
+  <div id="homeHero" class="carousel slide mb-4" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#homeHero" data-bs-slide-to="0" class="active"></button>
+      <button type="button" data-bs-target="#homeHero" data-bs-slide-to="1"></button>
+      <button type="button" data-bs-target="#homeHero" data-bs-slide-to="2"></button>
+      <button type="button" data-bs-target="#homeHero" data-bs-slide-to="3"></button>
+    </div>
+    <div class="carousel-inner rounded-3 overflow-hidden">
+      <div class="carousel-item active">
+        <img src="assets/images/skills/photo1.png" class="d-block w-100 hero-img" alt="Beginner Guitar Lessons">
+        <div class="carousel-caption d-none d-md-block">
+          <h2 class="mb-0">Beginner Guitar Lessons</h2>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="assets/images/skills/photo2.png" class="d-block w-100 hero-img" alt="Intermediate Fingerstyle">
+        <div class="carousel-caption d-none d-md-block">
+          <h2 class="mb-0">Intermediate Fingerstyle</h2>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="assets/images/skills/photo3.png" class="d-block w-100 hero-img" alt="Artisan Bread Baking">
+        <div class="carousel-caption d-none d-md-block">
+          <h2 class="mb-0">Artisan Bread Baking</h2>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="assets/images/skills/photo4.png" class="d-block w-100 hero-img" alt="French Pastry Making">
+        <div class="carousel-caption d-none d-md-block">
+          <h2 class="mb-0">French Pastry Making</h2>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#homeHero" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#homeHero" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
   </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </button>
-</div>
 
-<section class="cards">
-  <h2 class="section-title">Latest Skills</h2>
-  <div class="grid">
-    <?php
-      $q = "SELECT skill_id, title, description, category, rate_per_hr, level, image_path
-            FROM skills ORDER BY created_at DESC LIMIT 4";
-      if ($res = $conn->query($q)) {
-        while ($row = $res->fetch_assoc()) {
-          $id   = (int)$row['skill_id'];
-          $img  = $row['image_path'] ?: 'placeholder.png';
-          $rate = number_format((float)$row['rate_per_hr'], 2);
-          ?>
-            <article class="card">
-              <div class="thumb" data-full="<?= 'assets/images/skills/' . htmlspecialchars($img) ?>" data-title="<?= htmlspecialchars($row['title']) ?>">
-                <img src="<?= 'assets/images/skills/' . htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($row['title']) ?>">
-              </div>
-              <div class="card-body">
-                <h3><?= htmlspecialchars($row['title']) ?></h3>
-                <p class="meta"><?= htmlspecialchars($row['category']) ?> • <?= htmlspecialchars($row['level']) ?> • $<?= $rate ?>/hr</p>
-                <a class="btn" href="details.php?id=<?= $id ?>">View Details</a>
-              </div>
-            </article>
-          <?php
-        }
-        $res->free();
-      }
-    ?>
+  <!-- Latest Skills (exact 4 skills) -->
+  <div class="container mb-5 latest-skills">
+    <h2 class="mb-3">Latest Skills</h2>
+    <div class="row g-4">
+      <?php
+      // Force the 4 on the brief, in this order
+      $ids_sql = "SELECT * FROM skills
+                  WHERE title IN ('Intro to PHP & MySQL','Intermediate Fingerstyle','Artisan Bread Baking','French Pastry Making')
+                  ORDER BY FIELD(title,
+                    'Intro to PHP & MySQL',
+                    'Intermediate Fingerstyle',
+                    'Artisan Bread Baking',
+                    'French Pastry Making')";
+      $res = $conn->query($ids_sql);
+      while ($row = $res->fetch_assoc()):
+      ?>
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h3 class="card-title"><a href="details.php?id=<?= (int)$row['skill_id'] ?>">
+                <?= htmlspecialchars($row['title']) ?></a>
+              </h3>
+              <p class="mb-2">Rate: $<?= number_format($row['rate_per_hr'], 2) ?>/hr</p>
+              <a href="details.php?id=<?= (int)$row['skill_id'] ?>" class="btn btn-primary">View Details</a>
+            </div>
+          </div>
+        </div>
+      <?php endwhile; ?>
+    </div>
   </div>
-</section>
 
-<!-- Shared modal -->
-<div id="modal" class="modal"><img id="modalImg" alt=""><button id="modalClose" class="modal-close">Close</button></div>
+</main>
 
-<?php
-require 'includes/footer.inc';
-$conn->close();
+<?php include 'includes/footer.inc'; ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

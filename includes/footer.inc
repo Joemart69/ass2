@@ -1,11 +1,8 @@
-</main>
 <footer class="site-footer">
-  <div class="container">
-    <p>&copy; <?= date('Y') ?> SkillSwap. All rights reserved.</p>
-  </div>
+  <p>&copy; <?= date('Y') ?> SkillSwap. All rights reserved.</p>
 </footer>
 
-<!-- Bootstrap bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JS scripts -->
+<script src="assets/js/scripts.js"></script>
 </body>
 </html>

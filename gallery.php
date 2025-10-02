@@ -1,41 +1,69 @@
 <?php
-$page_title = 'Skill Gallery';
+// gallery.php
 $active = 'Gallery';
-require 'includes/header.inc';
-require 'includes/nav.inc';
-require 'includes/db_connect.inc';
+$page_title = 'Skill Gallery';
+
+require __DIR__ . '/includes/db_connect.inc';
+require __DIR__ . '/includes/header.inc';
+require __DIR__ . '/includes/nav.inc';
+
+/**
+ * 8 required skills in the exact display order from the assignment
+ */
+$must_have = [
+  "Beginner Guitar Lessons",
+  "Intermediate Fingerstyle",
+  "Artisan Bread Baking",
+  "French Pastry Making",
+  "Watercolor Basics",
+  "Digital Illustration with Procreate",
+  "Morning Vinyasa Flow",
+  "Intro to PHP & MySQL"
+];
+
+// Prepare IN() and FIELD() lists safely
+$quoted = array_map(fn($t) => "'" . $conn->real_escape_string($t) . "'", $must_have);
+$list_for_in    = implode(',', $quoted);
+$list_for_order = implode(',', $quoted);
+
+// Fetch only those 8, preserving assignment order
+$sql = "
+  SELECT skill_id, title, image_path, category, level, rate_per_hr
+  FROM skills
+  WHERE title IN ($list_for_in)
+  ORDER BY FIELD(title, $list_for_order)
+";
+$res = $conn->query($sql);
 ?>
+<main class="container gallery">
+  <h1>Skill Gallery</h1>
 
-<h2>Skill Gallery</h2>
-<div class="grid gallery">
-  <?php
-    $q = "SELECT skill_id, title, category, level, rate_per_hr, image_path
-          FROM skills ORDER BY created_at DESC";
-    if ($res = $conn->query($q)) {
-      while ($row = $res->fetch_assoc()) {
-        $id = (int)$row['skill_id'];
-        $img = $row['image_path'] ?: 'placeholder.png';
-        $rate = number_format((float)$row['rate_per_hr'], 2);
-        ?>
-        <article class="card image-card" data-full="<?= 'assets/images/skills/' . htmlspecialchars($img) ?>" data-title="<?= htmlspecialchars($row['title']) ?>">
-          <div class="thumb">
-            <img src="<?= 'assets/images/skills/' . htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($row['title']) ?>">
-          </div>
-          <div class="card-body">
-            <h3><a href="details.php?id=<?= $id ?>"><?= htmlspecialchars($row['title']) ?></a></h3>
-            <p class="meta"><?= htmlspecialchars($row['category']) ?> • <?= htmlspecialchars($row['level']) ?> • $<?= $rate ?>/hr</p>
-          </div>
-        </article>
-        <?php
-      }
-      $res->free();
-    }
-  ?>
-</div>
+  <div class="gallery-grid">
+    <?php if ($res && $res->num_rows > 0): ?>
+      <?php while ($row = $res->fetch_assoc()): ?>
+        <figure class="image-card">
+          <img
+            src="assets/images/skills/<?= htmlspecialchars($row['image_path']) ?>"
+            alt="<?= htmlspecialchars($row['title']) ?>"
+            data-full="assets/images/skills/<?= htmlspecialchars($row['image_path']) ?>"
+          />
+          <figcaption>
+            <a href="details.php?id=<?= (int)$row['skill_id'] ?>">
+              <?= htmlspecialchars($row['title']) ?>
+            </a>
+          </figcaption>
+        </figure>
+      <?php endwhile; ?>
+    <?php else: ?>
+      <p>No skills found.</p>
+    <?php endif; ?>
+  </div>
 
-<!-- Shared modal -->
-<div id="modal" class="modal"><img id="modalImg" alt=""><button id="modalClose" class="modal-close">Close</button></div>
+  <!-- Modal (IDs must match scripts.js) -->
+  <div id="imgModal" class="modal" role="dialog" aria-modal="true" aria-label="Image preview">
+    <button id="modalClose" class="modal-close" aria-label="Close preview">✕</button>
+    <img id="modalImg" src="" alt="">
+  </div>
+</main>
 
-<?php
-require 'includes/footer.inc';
-$conn->close();
+<?php require __DIR__ . '/includes/footer.inc'; ?>

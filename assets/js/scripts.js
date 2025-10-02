@@ -1,8 +1,9 @@
-// Simple image modal shared by Gallery + Details + Index cards
+// Image modal + add.php validation
 document.addEventListener('DOMContentLoaded', () => {
-  const modal = document.getElementById('modal');
-  const modalImg = document.getElementById('modalImg');
-  const modalClose = document.getElementById('modalClose');
+  // ---- Modal wiring (IDs must match your HTML) ----
+  const modal = document.getElementById('imgModal');   // <div id="imgModal" class="modal">
+  const modalImg = document.getElementById('modalImg'); // <img id="modalImg">
+  const modalClose = document.getElementById('modalClose'); // <button id="modalClose">
 
   function openModal(src, alt) {
     if (!modal || !modalImg) return;
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalImg.alt = alt || '';
     modal.classList.add('open');
   }
+
   function closeModal() {
     if (!modal || !modalImg) return;
     modal.classList.remove('open');
@@ -17,15 +19,19 @@ document.addEventListener('DOMContentLoaded', () => {
     modalImg.alt = '';
   }
 
+  // Close actions
   if (modalClose) modalClose.addEventListener('click', closeModal);
   if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-  // Any element with data-full opens the modal
-  document.querySelectorAll('[data-full]').forEach(el => {
-    el.addEventListener('click', () => openModal(el.dataset.full, el.dataset.title || 'Image'));
+  // ---- Event delegation for any clickable with data-full ----
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-full]');
+    if (!el) return;
+    e.preventDefault(); // in case it sits inside a link
+    openModal(el.dataset.full, el.getAttribute('alt') || el.dataset.title || 'Image');
   });
 
-  // Add form validation (client-side) for add.php
+  // ---- Add form validation (client-side) for add.php ----
   const form = document.getElementById('skillForm');
   if (form) {
     form.addEventListener('submit', (e) => {
