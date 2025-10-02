@@ -38,7 +38,7 @@ $skill = $res && $res->num_rows > 0 ? $res->fetch_assoc() : null;
     <p>Skill not found.</p>
   <?php endif; ?>
 
-  <!-- Modal (IDs must match scripts.js) -->
+  <!-- Modal -->
   <div id="imgModal" class="modal" role="dialog" aria-modal="true" aria-label="Image preview">
     <button id="modalClose" class="modal-close" aria-label="Close preview">✕</button>
     <img id="modalImg" src="" alt="">

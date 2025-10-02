@@ -104,7 +104,7 @@ main.container { padding: 1.25rem 0 2rem; }
 .details-layout { display: grid; grid-template-columns: 420px 1fr; gap: 1rem; }
 .details-thumb img { width: 100%; height: auto; border-radius: 12px; border: 1px solid #eee; }
 
-/* Form (add.php) */
+/* Form */
 .form { max-width: 880px; }
 .form label { display: block; margin-bottom: .85rem; font-weight: 700; }
 .form input[type="text"],
@@ -179,7 +179,6 @@ main.container{ flex:1 0 auto; }
   object-fit: cover;
 }
 
-/* Latest Skills titles not blue */
 .latest-skills .card-title a {
   color: var(--ink);
   text-decoration: none;
@@ -188,7 +187,7 @@ main.container{ flex:1 0 auto; }
   text-decoration: underline;
 }
 
-/* Latest Skills buttons orange */
+/* Latest Skills */
 .latest-skills .btn,
 .latest-skills .btn-primary {
   background-color: var(--brand);

@@ -52,12 +52,11 @@ include 'includes/db_connect.inc';
     </button>
   </div>
 
-  <!-- Latest Skills (exact 4 skills) -->
+  <!-- Latest Skills -->
   <div class="container mb-5 latest-skills">
     <h2 class="mb-3">Latest Skills</h2>
     <div class="row g-4">
       <?php
-      // Force the 4 on the brief, in this order
       $ids_sql = "SELECT * FROM skills
                   WHERE title IN ('Intro to PHP & MySQL','Intermediate Fingerstyle','Artisan Bread Baking','French Pastry Making')
                   ORDER BY FIELD(title,

@@ -7,7 +7,7 @@ require __DIR__ . '/includes/db_connect.inc';
 require __DIR__ . '/includes/header.inc';
 require __DIR__ . '/includes/nav.inc';
 
-// The 8 skills required by the assignment, in the exact display order
+// Skills
 $must_have = [
   "Beginner Guitar Lessons",
   "Intermediate Fingerstyle",
@@ -19,12 +19,10 @@ $must_have = [
   "Intro to PHP & MySQL"
 ];
 
-// Build a quoted, comma-separated list for SQL IN() and FIELD()
 $quoted = array_map(fn($t) => "'" . $conn->real_escape_string($t) . "'", $must_have);
 $list_for_in    = implode(',', $quoted);
 $list_for_order = implode(',', $quoted);
 
-// Pull only those 8 rows, and preserve the exact order
 $sql = "
   SELECT skill_id, title, category, level, rate_per_hr
   FROM skills

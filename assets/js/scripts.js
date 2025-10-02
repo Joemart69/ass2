@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', (e) => {
     const el = e.target.closest('[data-full]');
     if (!el) return;
-    e.preventDefault(); // in case it sits inside a link
+    e.preventDefault(); 
     openModal(el.dataset.full, el.getAttribute('alt') || el.dataset.title || 'Image');
   });
 

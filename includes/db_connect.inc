@@ -1,20 +1,26 @@
 <?php
-/* DB connection (local XAMPP by default) */
-$DB_HOST = 'localhost';
-$DB_USER = 'root';
-$DB_PASS = '';
-$DB_NAME = 'skillswap';   // the database you created in phpMyAdmin
+// db_connect.inc
 
-$conn = @new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
-if ($conn->connect_error) {
-  die('Database connection failed: ' . htmlspecialchars($conn->connect_error));
+// Detect if running on Titan or local XAMPP
+if (strpos($_SERVER['HTTP_HOST'], 'titan.csit.rmit.edu.au') !== false) {
+    // Running on Titan
+    $host = "titan.csit.rmit.edu.au";
+    $user = "s3843976_jacob5";   
+    $pass = "";  
+    $dbname = "s3843976_jacob5";     
+} else {
+    // Running locally (XAMPP)
+    $host = "localhost";
+    $user = "root";
+    $pass = "";
+    $dbname = "skillswap";
 }
-$conn->set_charset('utf8mb4');
 
-/*
-  When you deploy to Coreteaching + Jacob5 later, swap the values above to:
-  $DB_HOST = 'jacob5.rmit.edu.au';
-  $DB_USER = 'sXXXXXXX';   // your student user
-  $DB_PASS = '********';
-  $DB_NAME = 'sXXXXXXX';   // same as user on Jacob5
-*/
+// Connect to MySQL
+$conn = mysqli_connect($host, $user, $pass, $dbname);
+
+// Check connection
+if (!$conn) {
+    die("Database connection failed: " . mysqli_connect_error());
+}
+?>

@@ -7,9 +7,6 @@ require __DIR__ . '/includes/db_connect.inc';
 require __DIR__ . '/includes/header.inc';
 require __DIR__ . '/includes/nav.inc';
 
-/**
- * 8 required skills in the exact display order from the assignment
- */
 $must_have = [
   "Beginner Guitar Lessons",
   "Intermediate Fingerstyle",
@@ -21,12 +18,10 @@ $must_have = [
   "Intro to PHP & MySQL"
 ];
 
-// Prepare IN() and FIELD() lists safely
 $quoted = array_map(fn($t) => "'" . $conn->real_escape_string($t) . "'", $must_have);
 $list_for_in    = implode(',', $quoted);
 $list_for_order = implode(',', $quoted);
 
-// Fetch only those 8, preserving assignment order
 $sql = "
   SELECT skill_id, title, image_path, category, level, rate_per_hr
   FROM skills
@@ -59,7 +54,7 @@ $res = $conn->query($sql);
     <?php endif; ?>
   </div>
 
-  <!-- Modal (IDs must match scripts.js) -->
+  <!-- Modal -->
   <div id="imgModal" class="modal" role="dialog" aria-modal="true" aria-label="Image preview">
     <button id="modalClose" class="modal-close" aria-label="Close preview">✕</button>
     <img id="modalImg" src="" alt="">
