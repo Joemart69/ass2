@@ -4,10 +4,10 @@
 // Detect if running on Titan or local XAMPP
 if (strpos($_SERVER['HTTP_HOST'], 'titan.csit.rmit.edu.au') !== false) {
     // Running on Titan
-    $host = "titan.csit.rmit.edu.au";
-    $user = "s3843976_jacob5";   
-    $pass = "";  
-    $dbname = "s3843976_jacob5";     
+    $host = "talsprddb02.int.its.rmit.edu.au";
+    $user = "s3843976";   
+    $pass = "Joemart12345!";  
+    $dbname = "s3843976";     
 } else {
     // Running locally (XAMPP)
     $host = "localhost";

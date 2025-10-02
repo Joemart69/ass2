@@ -11,6 +11,9 @@
 3. Place the `a2` folder into `C:\xampp\htdocs\a2`.
 4. Open [http://localhost/a2/index.php](http://localhost/a2/index.php) in your browser.
 
+## GitHub Repository
+https://github.com/Joemart69/ass2
+
 ## Project Structure
 - `index.php`: Homepage with featured skills.
 - `allskills.php`: List view of all skills in table format.
